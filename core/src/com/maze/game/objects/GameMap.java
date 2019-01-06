@@ -3,11 +3,11 @@ package com.maze.game.objects;
 
 import com.maze.game.objects.factory.AbstractFactory;
 import com.maze.game.objects.factoryfactory.FactoryFactoryUtil;
-import com.maze.game.objects.factory.WinterFactoryUtil;
 import com.maze.game.objects.gameObjects.*;
 import com.maze.game.objects.gameObjects.standard.EmptyHall;
+import com.maze.game.objects.gameObjects.standard.Key;
 import com.maze.game.objects.gameObjects.standard.Player;
-import com.maze.game.objects.gameObjects.winter.WinterEmptyHall;
+import com.maze.game.objects.gameObjects.winter.WinterKey;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,7 +15,6 @@ import java.util.Scanner;
 
 import static com.maze.game.objects.factory.GameObjectStringMap.getString;
 import static com.maze.game.objects.utils.Constants.EMPTY_HALL_CODE;
-import static com.maze.game.objects.utils.PathToFilesUtil.EMPTY_HALL;
 
 public class GameMap {
 
@@ -26,6 +25,7 @@ public class GameMap {
     private GameObject[][] map= new GameObject[width][height];
     private int oldPlayerX;
     private int oldPlayerY;
+    private GameObject lastPlayerGameObject;
 
     public void init(int width,int height){
         map = new GameObject[width][height];
@@ -41,6 +41,7 @@ public class GameMap {
     public void initFactory(String number){
         try {
             abstractFactoryUtil = factoryFactoryUtil.createAbstractFactory(number);
+            lastPlayerGameObject = abstractFactoryUtil.createGameObject(EMPTY_HALL_CODE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -81,18 +82,34 @@ public class GameMap {
     public void insertPlayerObject(int x,int y){
         map[x][y] = new Player();
     }
-
+    public GameObject getPlayer(){
+        for(int i= 0; i<width;i++) {
+            for(int j=0;j<height;j++) {
+               if( map[i][j] instanceof Player){
+                   return map[i][j];
+               }
+            }
+        }
+        return null;
+    }
     public void movePlayer(int newX,int newY){
+       GameObject player = map[oldPlayerX][oldPlayerY];
 
         try {
-            map[oldPlayerX][oldPlayerY] = abstractFactoryUtil.createGameObject(EMPTY_HALL_CODE);
+            if(lastPlayerGameObject instanceof Key || lastPlayerGameObject instanceof WinterKey) {
+                ((Player) player).setKeyCounter(((Player) player).getKeyCounter()+1);
+                map[oldPlayerX][oldPlayerY] = abstractFactoryUtil.createGameObject(EMPTY_HALL_CODE);
+            }else {
+                map[oldPlayerX][oldPlayerY] = abstractFactoryUtil.createGameObject(getString(lastPlayerGameObject));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        lastPlayerGameObject = map[newX][newY];
         oldPlayerX = newX;
         oldPlayerY = newY;
-        map[newX][newY] = new Player();
+        map[newX][newY] = player;
+
     }
 
     public GameObject get(int x, int y){
@@ -101,10 +118,15 @@ public class GameMap {
 
     public void destroy(int x, int y){
         if(x!=0 &&  y!=0 && x!=29 && y!=29){
-            map[x+1][y]= new EmptyHall();
-            map[x-1][y]=new EmptyHall();
-            map[x][y+1]=new EmptyHall();
-            map[x][y-1]=new EmptyHall();
+            try {
+                map[x+1][y]=abstractFactoryUtil.createGameObject(EMPTY_HALL_CODE);
+                map[x-1][y]=abstractFactoryUtil.createGameObject(EMPTY_HALL_CODE);
+                map[x][y+1]=abstractFactoryUtil.createGameObject(EMPTY_HALL_CODE);
+                map[x][y-1]=abstractFactoryUtil.createGameObject(EMPTY_HALL_CODE);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
     }
 
@@ -112,8 +134,12 @@ public class GameMap {
         for(int i= 0; i<width;i++) {
             for(int j=0;j<height;j++) {
                GameObject gameObject = map[i][j];
-               map[i][j] = abstractFactoryUtil.createGameObject(getString(gameObject));
-            }
+               if(gameObject instanceof Player){
+                map[i][j]= gameObject;
+               }else {
+                   map[i][j] = abstractFactoryUtil.createGameObject(getString(gameObject));
+               }
+               }
         }
     }
 }

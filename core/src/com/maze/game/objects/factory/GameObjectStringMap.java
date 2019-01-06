@@ -1,26 +1,28 @@
 package com.maze.game.objects.factory;
 
 import com.maze.game.objects.gameObjects.*;
-import com.maze.game.objects.gameObjects.standard.EmptyHall;
-import com.maze.game.objects.gameObjects.standard.Player;
-import com.maze.game.objects.gameObjects.standard.VictoryPlace;
-import com.maze.game.objects.gameObjects.standard.Wall;
+import com.maze.game.objects.gameObjects.standard.*;
 import com.maze.game.objects.gameObjects.winter.WinterEmptyHall;
 import com.maze.game.objects.gameObjects.winter.WinterWall;
+
+import static com.maze.game.objects.utils.Constants.*;
 
 public class GameObjectStringMap {
 public static String getString(GameObject gameObject) {
     if (gameObject instanceof Wall || gameObject instanceof WinterWall) {
-        return "2";
+        return WALL_CODE;
     }
     if (gameObject instanceof EmptyHall || gameObject instanceof WinterEmptyHall) {
-        return "0";
+        return EMPTY_HALL_CODE;
     }
     if (gameObject instanceof Player) {
-        return "1";
+        return PLAYER_CODE;
     }
     if (gameObject instanceof VictoryPlace) {
-        return "3";
+        return VICTORY_PLACE_CODE;
+    }
+    if (gameObject instanceof Key){
+        return KEY_CODE;
     }
     return null;
 }

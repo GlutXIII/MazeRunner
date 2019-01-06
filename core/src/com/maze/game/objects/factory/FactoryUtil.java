@@ -1,10 +1,7 @@
 package com.maze.game.objects.factory;
 
 import com.maze.game.objects.gameObjects.*;
-import com.maze.game.objects.gameObjects.standard.EmptyHall;
-import com.maze.game.objects.gameObjects.standard.Player;
-import com.maze.game.objects.gameObjects.standard.VictoryPlace;
-import com.maze.game.objects.gameObjects.standard.Wall;
+import com.maze.game.objects.gameObjects.standard.*;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,7 +16,11 @@ public class FactoryUtil implements AbstractFactory {
         put(PLAYER_CODE, new GameObjectFactory() { public GameObject create() { return new Player(); }});
         put(WALL_CODE, new GameObjectFactory() { public GameObject create() { return new Wall(); }});
         put(VICTORY_PLACE_CODE, new GameObjectFactory() { public GameObject create() { return new VictoryPlace(); }});
-    }});
+        put(KEY_CODE, new GameObjectFactory() { public GameObject create() { return new Key(); }});
+        put(DOORS_CODE, new GameObjectFactory() { public GameObject create() { return new Doors(); }});
+
+
+            }});
 
 public GameObject createGameObject(String action) throws Exception {
     GameObjectFactory factory = factoryMap.get(action);

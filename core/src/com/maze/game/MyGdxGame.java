@@ -13,12 +13,13 @@ import com.maze.game.objects.gameObjects.standard.VictoryPlace;
 import com.maze.game.objects.gameObjects.standard.Wall;
 import com.maze.game.objects.gameObjects.winter.WinterWall;
 
+import static com.maze.game.objects.utils.Constants.EMPTY_HALL_CODE;
 import static com.maze.game.objects.utils.PathToFilesUtil.*;
 
 public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch;
 
-	private Player player = new Player();
+	private Player player;
 	private GameMap gameMap = new GameMap();
 
 	int flagStart =0;
@@ -58,12 +59,12 @@ public class MyGdxGame extends ApplicationAdapter {
 		else {
 			if (flagStart == 0) {
 				gameMap.init(30,30);
-				gameMap.initFactory("0");
-				player.init();
+				gameMap.initFactory(EMPTY_HALL_CODE);
 
-				gameMap.insertPlayerObject(player.getX(), player.getY());
+				//gameMap.insertPlayerObject(player.getX(), player.getY());
 				gameMap.loadFromFile(MAP_FILE_PATH);
-
+				player = ((Player)gameMap.getPlayer());
+				player.init();
 				flagStart = 1;
 				drawBackground();
 			}
@@ -76,7 +77,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	private boolean checkVictoryCondition(){
 		for(int i= 0; i<30;i++) {
 			for(int j=0;j<30;j++) {
-				if(gameMap.get(i,j) instanceof VictoryPlace && player.getX()==i && player.getY() ==j){
+				if(gameMap.get(i,j) instanceof VictoryPlace && player.getX()==i && player.getY() ==j && player.getKeyCounter()==3){
 					return true;
 				}
 
@@ -139,7 +140,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.N)) {
-			gameMap.initFactory("0");
+			gameMap.initFactory(EMPTY_HALL_CODE);
 			try {
 				gameMap.rerenderMap();
 			} catch (Exception e) {

@@ -10,6 +10,9 @@ import static com.maze.game.objects.utils.PathToFilesUtil.PLAYER;
 public class Player implements GameObject {
     //   private Texture playerText = new Texture(PLAYER);
     private int x,y;
+
+    private int keyCounter;
+
     @Override
     public void addToMap() {
 
@@ -25,6 +28,7 @@ public class Player implements GameObject {
     public void init(){
         x=0;
         y=0;
+        keyCounter =0;
     }
 
     public void moveTo(DirectionEnum directionEnum){
@@ -54,5 +58,13 @@ public class Player implements GameObject {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public int getKeyCounter() {
+        return keyCounter;
+    }
+
+    public void setKeyCounter(int keyCounter) {
+        this.keyCounter = keyCounter;
     }
 }
