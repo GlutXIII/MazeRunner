@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.maze.game.objects.DirectionEnum;
 import com.maze.game.objects.GameMap;
 import com.maze.game.objects.gameObjects.*;
+import com.maze.game.objects.gameObjects.standard.Doors;
 import com.maze.game.objects.gameObjects.standard.Player;
 import com.maze.game.objects.gameObjects.standard.VictoryPlace;
 import com.maze.game.objects.gameObjects.standard.Wall;
@@ -99,12 +100,12 @@ public class MyGdxGame extends ApplicationAdapter {
 
 	private void moveListener() {
 		if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-			if(player.getY() != 29 && !(gameMap.get(player.getX(),player.getY()+1) instanceof Wall) && !(gameMap.get(player.getX(),player.getY()+1) instanceof WinterWall)) {
+			if(player.getY() != 29 && !(gameMap.get(player.getX(),player.getY()+1) instanceof Wall) && !(gameMap.get(player.getX(),player.getY()+1) instanceof WinterWall) && !(gameMap.get(player.getX(),player.getY()+1) instanceof Doors)) {
 				player.moveTo(DirectionEnum.gora);
 			}
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-			if(player.getY()!=0 && !(gameMap.get(player.getX(),player.getY()-1)instanceof Wall) && !(gameMap.get(player.getX(),player.getY()-1)instanceof WinterWall)) {
+			if(player.getY()!=0 && !(gameMap.get(player.getX(),player.getY()-1)instanceof Wall) && !(gameMap.get(player.getX(),player.getY()-1)instanceof WinterWall) && !(gameMap.get(player.getX(),player.getY()-1)instanceof Doors)) {
 
 				player.moveTo(DirectionEnum.dol);
 			}
@@ -112,14 +113,14 @@ public class MyGdxGame extends ApplicationAdapter {
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-			if(player.getX()!=29 && !(gameMap.get(player.getX()+1,player.getY())instanceof Wall) && !(gameMap.get(player.getX()+1,player.getY())instanceof WinterWall)) {
+			if(player.getX()!=29 && !(gameMap.get(player.getX()+1,player.getY())instanceof Wall) && !(gameMap.get(player.getX()+1,player.getY())instanceof WinterWall) && !(gameMap.get(player.getX()+1,player.getY())instanceof Doors)) {
 
 				player.moveTo(DirectionEnum.prawo);
 			}
 
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-			if(player.getX()!=0 && !(gameMap.get(player.getX()-1,player.getY()) instanceof Wall) && !(gameMap.get(player.getX()-1,player.getY()) instanceof WinterWall)) {
+			if(player.getX()!=0 && !(gameMap.get(player.getX()-1,player.getY()) instanceof Wall) && !(gameMap.get(player.getX()-1,player.getY()) instanceof WinterWall) && !(gameMap.get(player.getX()-1,player.getY()) instanceof Doors)) {
 
 				player.moveTo(DirectionEnum.lewo);
 			}
@@ -129,6 +130,11 @@ public class MyGdxGame extends ApplicationAdapter {
 		if (Gdx.input.isKeyPressed(Input.Keys.X)) {
 				gameMap.destroy(player.getX(),player.getY());
 		}
+
+		if (Gdx.input.isKeyPressed(Input.Keys.O)) {
+			gameMap.openDoors(player.getX(),player.getY());
+		}
+
 
 		if (Gdx.input.isKeyPressed(Input.Keys.I)) {
 			gameMap.initFactory("1");

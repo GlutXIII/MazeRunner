@@ -4,6 +4,7 @@ package com.maze.game.objects;
 import com.maze.game.objects.factory.AbstractFactory;
 import com.maze.game.objects.factoryfactory.FactoryFactoryUtil;
 import com.maze.game.objects.gameObjects.*;
+import com.maze.game.objects.gameObjects.standard.Doors;
 import com.maze.game.objects.gameObjects.standard.EmptyHall;
 import com.maze.game.objects.gameObjects.standard.Key;
 import com.maze.game.objects.gameObjects.standard.Player;
@@ -15,6 +16,7 @@ import java.util.Scanner;
 
 import static com.maze.game.objects.factory.GameObjectStringMap.getString;
 import static com.maze.game.objects.utils.Constants.EMPTY_HALL_CODE;
+import static com.maze.game.objects.utils.Constants.OPEN_DOORS_CODE;
 
 public class GameMap {
 
@@ -140,6 +142,27 @@ public class GameMap {
                    map[i][j] = abstractFactoryUtil.createGameObject(getString(gameObject));
                }
                }
+        }
+    }
+
+    public void openDoors(int x, int y){
+        if(x!=0 &&  y!=0 && x!=29 && y!=29){
+            try {
+                if(map[x+1][y] instanceof Doors){
+                    map[x+1][y]=abstractFactoryUtil.createGameObject(OPEN_DOORS_CODE);
+                }
+                if( map[x-1][y] instanceof Doors){
+                    map[x-1][y]=abstractFactoryUtil.createGameObject(OPEN_DOORS_CODE);
+                }
+                if(map[x][y+1] instanceof Doors){
+                    map[x][y+1]=abstractFactoryUtil.createGameObject(OPEN_DOORS_CODE);
+                }
+                if(map[x][y-1] instanceof Doors){
+                    map[x][y-1]=abstractFactoryUtil.createGameObject(OPEN_DOORS_CODE);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

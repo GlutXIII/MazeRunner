@@ -7,4 +7,5 @@ public class Constants {
     public static final String VICTORY_PLACE_CODE = "3";
     public static final String KEY_CODE = "4";
     public static final String DOORS_CODE = "5";
+    public static final String OPEN_DOORS_CODE = "6";
 }
