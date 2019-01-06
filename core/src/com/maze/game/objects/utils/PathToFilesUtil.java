@@ -1,4 +1,4 @@
-package com.maze.game.objects;
+package com.maze.game.objects.utils;
 
 public class PathToFilesUtil {
     public static final String WALL = "Maze1.png";

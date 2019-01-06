@@ -2,16 +2,20 @@ package com.maze.game.objects;
 
 
 import com.maze.game.objects.factory.AbstractFactory;
-import com.maze.game.objects.factory.FactoryFactoryUtil;
+import com.maze.game.objects.factoryfactory.FactoryFactoryUtil;
 import com.maze.game.objects.factory.WinterFactoryUtil;
 import com.maze.game.objects.gameObjects.*;
+import com.maze.game.objects.gameObjects.standard.EmptyHall;
+import com.maze.game.objects.gameObjects.standard.Player;
+import com.maze.game.objects.gameObjects.winter.WinterEmptyHall;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Map;
 import java.util.Scanner;
 
 import static com.maze.game.objects.factory.GameObjectStringMap.getString;
+import static com.maze.game.objects.utils.Constants.EMPTY_HALL_CODE;
+import static com.maze.game.objects.utils.PathToFilesUtil.EMPTY_HALL;
 
 public class GameMap {
 
@@ -79,11 +83,13 @@ public class GameMap {
     }
 
     public void movePlayer(int newX,int newY){
-        if(abstractFactoryUtil instanceof WinterFactoryUtil){
-            map[oldPlayerX][oldPlayerY] = new WinterEmptyHall();
-        }else {
-            map[oldPlayerX][oldPlayerY] = new EmptyHall();
+
+        try {
+            map[oldPlayerX][oldPlayerY] = abstractFactoryUtil.createGameObject(EMPTY_HALL_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
         oldPlayerX = newX;
         oldPlayerY = newY;
         map[newX][newY] = new Player();

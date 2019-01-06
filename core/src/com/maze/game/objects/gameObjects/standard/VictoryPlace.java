@@ -1,9 +1,10 @@
-package com.maze.game.objects.gameObjects;
+package com.maze.game.objects.gameObjects.standard;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.maze.game.objects.gameObjects.GameObject;
 
-import static com.maze.game.objects.PathToFilesUtil.VICTORY_PLACE;
+import static com.maze.game.objects.utils.PathToFilesUtil.VICTORY_PLACE;
 
 public class VictoryPlace implements GameObject {
     private Texture victoryPlaceTexture = new Texture(VICTORY_PLACE);

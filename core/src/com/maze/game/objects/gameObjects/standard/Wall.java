@@ -1,10 +1,11 @@
-package com.maze.game.objects.gameObjects;
+package com.maze.game.objects.gameObjects.standard;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.maze.game.objects.gameObjects.Abstract.AbstractWall;
+import com.maze.game.objects.gameObjects.GameObject;
 
-import static com.maze.game.objects.PathToFilesUtil.WALL;
+import static com.maze.game.objects.utils.PathToFilesUtil.WALL;
 
 public class Wall implements GameObject, AbstractWall {
     private Texture wallTexture = new Texture(WALL);

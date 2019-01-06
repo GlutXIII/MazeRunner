@@ -8,10 +8,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.maze.game.objects.DirectionEnum;
 import com.maze.game.objects.GameMap;
 import com.maze.game.objects.gameObjects.*;
+import com.maze.game.objects.gameObjects.standard.Player;
+import com.maze.game.objects.gameObjects.standard.VictoryPlace;
+import com.maze.game.objects.gameObjects.standard.Wall;
+import com.maze.game.objects.gameObjects.winter.WinterWall;
 
-import java.util.Random;
-
-import static com.maze.game.objects.PathToFilesUtil.*;
+import static com.maze.game.objects.utils.PathToFilesUtil.*;
 
 public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch;

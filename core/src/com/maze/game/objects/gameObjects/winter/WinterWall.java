@@ -1,11 +1,12 @@
-package com.maze.game.objects.gameObjects;
+package com.maze.game.objects.gameObjects.winter;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.maze.game.objects.gameObjects.GameObject;
 
-import static com.maze.game.objects.PathToFilesUtil.WINTER_WALL;
+import static com.maze.game.objects.utils.PathToFilesUtil.WINTER_WALL;
 
-public class WinterWall implements GameObject{
+public class WinterWall implements GameObject {
     private Texture wallTexture = new Texture(WINTER_WALL);
     @Override
     public void addToMap() {

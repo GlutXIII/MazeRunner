@@ -1,9 +1,10 @@
-package com.maze.game.objects.gameObjects;
+package com.maze.game.objects.gameObjects.standard;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.maze.game.objects.gameObjects.GameObject;
 
-import static com.maze.game.objects.PathToFilesUtil.EMPTY_HALL;
+import static com.maze.game.objects.utils.PathToFilesUtil.EMPTY_HALL;
 
 public class EmptyHall implements GameObject {
 

@@ -1,4 +1,8 @@
-package com.maze.game.objects.factory;
+package com.maze.game.objects.factoryfactory;
+
+import com.maze.game.objects.factory.AbstractFactory;
+import com.maze.game.objects.factory.FactoryUtil;
+import com.maze.game.objects.factory.WinterFactoryUtil;
 
 import java.util.Collections;
 import java.util.HashMap;

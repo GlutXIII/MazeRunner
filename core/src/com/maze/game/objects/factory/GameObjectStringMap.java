@@ -1,6 +1,12 @@
 package com.maze.game.objects.factory;
 
 import com.maze.game.objects.gameObjects.*;
+import com.maze.game.objects.gameObjects.standard.EmptyHall;
+import com.maze.game.objects.gameObjects.standard.Player;
+import com.maze.game.objects.gameObjects.standard.VictoryPlace;
+import com.maze.game.objects.gameObjects.standard.Wall;
+import com.maze.game.objects.gameObjects.winter.WinterEmptyHall;
+import com.maze.game.objects.gameObjects.winter.WinterWall;
 
 public class GameObjectStringMap {
 public static String getString(GameObject gameObject) {

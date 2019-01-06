@@ -1,10 +1,11 @@
-package com.maze.game.objects.gameObjects;
+package com.maze.game.objects.gameObjects.standard;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.maze.game.objects.DirectionEnum;
+import com.maze.game.objects.gameObjects.GameObject;
 
-import static com.maze.game.objects.PathToFilesUtil.PLAYER;
+import static com.maze.game.objects.utils.PathToFilesUtil.PLAYER;
 
 public class Player implements GameObject {
     //   private Texture playerText = new Texture(PLAYER);

@@ -1,9 +1,10 @@
-package com.maze.game.objects.gameObjects;
+package com.maze.game.objects.gameObjects.winter;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.maze.game.objects.gameObjects.GameObject;
 
-import static com.maze.game.objects.PathToFilesUtil.WINTER_EMPTY_HALL;
+import static com.maze.game.objects.utils.PathToFilesUtil.WINTER_EMPTY_HALL;
 
 public class WinterEmptyHall implements GameObject {
     private Texture emptyHallTexture = new Texture(WINTER_EMPTY_HALL);
