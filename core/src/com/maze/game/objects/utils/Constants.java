@@ -8,4 +8,6 @@ public class Constants {
     public static final String KEY_CODE = "4";
     public static final String DOORS_CODE = "5";
     public static final String OPEN_DOORS_CODE = "6";
+    public static final String ENEMY_CODE = "7";
+
 }

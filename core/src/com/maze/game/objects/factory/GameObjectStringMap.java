@@ -31,6 +31,9 @@ public static String getString(GameObject gameObject) {
     if (gameObject instanceof OpenDoors || gameObject instanceof WinterOpenDoors){
         return OPEN_DOORS_CODE;
     }
+    if (gameObject instanceof Enemy || gameObject instanceof Enemy){
+        return ENEMY_CODE;
+    }
     return null;
 }
 }

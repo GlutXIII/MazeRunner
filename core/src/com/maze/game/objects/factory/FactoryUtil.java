@@ -19,6 +19,7 @@ public class FactoryUtil implements AbstractFactory {
         put(KEY_CODE, new GameObjectFactory() { public GameObject create() { return new Key(); }});
         put(DOORS_CODE, new GameObjectFactory() { public GameObject create() { return new Doors(); }});
         put(OPEN_DOORS_CODE, new GameObjectFactory() { public GameObject create() { return new OpenDoors(); }});
+        put(ENEMY_CODE, new GameObjectFactory() { public GameObject create() { return new Enemy(); }});
 
 
 

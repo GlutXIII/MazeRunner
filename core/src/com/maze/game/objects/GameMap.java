@@ -4,10 +4,7 @@ package com.maze.game.objects;
 import com.maze.game.objects.factory.AbstractFactory;
 import com.maze.game.objects.factoryfactory.FactoryFactoryUtil;
 import com.maze.game.objects.gameObjects.*;
-import com.maze.game.objects.gameObjects.standard.Doors;
-import com.maze.game.objects.gameObjects.standard.EmptyHall;
-import com.maze.game.objects.gameObjects.standard.Key;
-import com.maze.game.objects.gameObjects.standard.Player;
+import com.maze.game.objects.gameObjects.standard.*;
 import com.maze.game.objects.gameObjects.winter.WinterKey;
 
 import java.io.File;
@@ -81,19 +78,38 @@ public class GameMap {
 
 
 }
-    public void insertPlayerObject(int x,int y){
-        map[x][y] = new Player();
-    }
     public GameObject getPlayer(){
         for(int i= 0; i<width;i++) {
             for(int j=0;j<height;j++) {
-               if( map[i][j] instanceof Player){
-                   return map[i][j];
-               }
+                if( map[i][j] instanceof Player){
+                    return map[i][j];
+                }
             }
         }
         return null;
     }
+
+    public GameObject getEnemy(){
+        for(int i= 0; i<width;i++) {
+            for(int j=0;j<height;j++) {
+                if( map[i][j] instanceof Enemy){
+                    Enemy enemy = (Enemy) map[i][j];
+                    enemy.setX(i);
+                    enemy.setY(j);
+                    return enemy;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void moveEnemy(int x, int y){
+        Enemy enemy = (Enemy) getEnemy();
+        map[enemy.getX()][enemy.getY()] = new EmptyHall();
+        map[x][y] = enemy;
+    }
+
+
     public void movePlayer(int newX,int newY){
        GameObject player = map[oldPlayerX][oldPlayerY];
 

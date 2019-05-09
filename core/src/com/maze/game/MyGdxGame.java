@@ -8,11 +8,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.maze.game.objects.DirectionEnum;
 import com.maze.game.objects.GameMap;
 import com.maze.game.objects.gameObjects.*;
-import com.maze.game.objects.gameObjects.standard.Doors;
-import com.maze.game.objects.gameObjects.standard.Player;
-import com.maze.game.objects.gameObjects.standard.VictoryPlace;
-import com.maze.game.objects.gameObjects.standard.Wall;
+import com.maze.game.objects.gameObjects.standard.*;
 import com.maze.game.objects.gameObjects.winter.WinterWall;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import static com.maze.game.objects.utils.Constants.EMPTY_HALL_CODE;
 import static com.maze.game.objects.utils.PathToFilesUtil.*;
@@ -21,9 +22,11 @@ public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch;
 
 	private Player player;
+	private Enemy enemy;
 	private GameMap gameMap = new GameMap();
 
 	int flagStart =0;
+	int tick=0;
 	
 	@Override
 	public void create () {
@@ -56,6 +59,10 @@ public class MyGdxGame extends ApplicationAdapter {
 			batch.begin();
 			batch.draw(new Texture(VICTORY), 0, 0,600,600);
 			batch.end();
+		}else if(flagStart!= 0 && checkDefeatCondition()){
+			batch.begin();
+			batch.draw(new Texture(DEFEAT), 0, 0,600,600);
+			batch.end();
 		}
 		else {
 			if (flagStart == 0) {
@@ -65,6 +72,8 @@ public class MyGdxGame extends ApplicationAdapter {
 				//gameMap.insertPlayerObject(player.getX(), player.getY());
 				gameMap.loadFromFile(MAP_FILE_PATH);
 				player = ((Player)gameMap.getPlayer());
+				enemy = (Enemy) gameMap.getEnemy();
+
 				player.init();
 				flagStart = 1;
 				drawBackground();
@@ -72,13 +81,31 @@ public class MyGdxGame extends ApplicationAdapter {
 
 			renderMap();
 			gameMap.movePlayer(player.getX(), player.getY());
+			if(tick%50  == 0) {
+				moveRandomlyEnemy();
+				gameMap.moveEnemy(enemy.getX(), enemy.getY());
+				tick = 0;
+				}
 			moveListener();
+			tick ++;
 		}
 	}
 	private boolean checkVictoryCondition(){
 		for(int i= 0; i<30;i++) {
 			for(int j=0;j<30;j++) {
 				if(gameMap.get(i,j) instanceof VictoryPlace && player.getX()==i && player.getY() ==j && player.getKeyCounter()==3){
+					return true;
+				}
+
+			}
+		}
+		return false;
+	}
+
+	private boolean checkDefeatCondition(){
+		for(int i= 0; i<30;i++) {
+			for(int j=0;j<30;j++) {
+				if(gameMap.get(i,j) instanceof Enemy && player.getX()==i && player.getY() ==j){
 					return true;
 				}
 
@@ -151,6 +178,44 @@ public class MyGdxGame extends ApplicationAdapter {
 				gameMap.rerenderMap();
 			} catch (Exception e) {
 				e.printStackTrace();
+			}
+		}
+	}
+
+	public void moveRandomlyEnemy() {
+		Enemy enemy = (Enemy) gameMap.getEnemy();
+		List<String> possibilities = new ArrayList<String>();
+		if (enemy.getY() != 29 && (gameMap.get(enemy.getX(), enemy.getY() + 1) instanceof EmptyHall) || (gameMap.get(enemy.getX(), enemy.getY() + 1) instanceof Player)) {
+			possibilities.add("up");
+		}
+		if (enemy.getY() != 0 && (gameMap.get(enemy.getX(), enemy.getY() - 1) instanceof EmptyHall) || (gameMap.get(enemy.getX(), enemy.getY() - 1) instanceof Player)) {
+			possibilities.add("down");
+		}
+		if (enemy.getX() != 29 && (gameMap.get(enemy.getX() + 1, enemy.getY()) instanceof EmptyHall) || (gameMap.get(enemy.getX() + 1, enemy.getY()) instanceof Player)) {
+			possibilities.add("right");
+		}
+		if(enemy.getX()!=0 && (gameMap.get(enemy.getX()-1,enemy.getY()) instanceof EmptyHall) || (gameMap.get(enemy.getX()-1,enemy.getY()) instanceof Player)){
+			possibilities.add("left");
+		}
+
+		if(!possibilities.isEmpty()){
+			Random r = new Random();
+			String result = possibilities.get(r.nextInt(possibilities.size()));
+
+			switch(result){
+				case "up":
+					enemy.moveTo(DirectionEnum.gora);
+					break;
+				case "down":
+					enemy.moveTo(DirectionEnum.dol);
+					break;
+				case "right":
+					enemy.moveTo(DirectionEnum.prawo);
+					break;
+				case "left":
+					enemy.moveTo(DirectionEnum.lewo);
+					break;
+
 			}
 		}
 	}
