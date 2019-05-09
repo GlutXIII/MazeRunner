@@ -7,9 +7,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.maze.game.objects.DirectionEnum;
 import com.maze.game.objects.GameMap;
-import com.maze.game.objects.gameObjects.*;
+import com.maze.game.objects.gameObjects.GameObject;
 import com.maze.game.objects.gameObjects.standard.*;
 import com.maze.game.objects.gameObjects.winter.WinterWall;
+import com.maze.game.objects.graph.DFSPaths;
+import com.maze.game.objects.graph.Graph;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	private Player player;
 	private Enemy enemy;
 	private GameMap gameMap = new GameMap();
+	private Graph graph = new Graph(900);
 
 	int flagStart =0;
 	int tick=0;
@@ -55,6 +58,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	 * Main game function in which all game objects are updated and rendered
 	 */
 	private void mainGame() {
+
 		if(flagStart!= 0 && checkVictoryCondition()){
 			batch.begin();
 			batch.draw(new Texture(VICTORY), 0, 0,600,600);
@@ -68,13 +72,34 @@ public class MyGdxGame extends ApplicationAdapter {
 			if (flagStart == 0) {
 				gameMap.init(30,30);
 				gameMap.initFactory(EMPTY_HALL_CODE);
-
 				//gameMap.insertPlayerObject(player.getX(), player.getY());
 				gameMap.loadFromFile(MAP_FILE_PATH);
+				createGraph();
+				System.out.println(graph.toString());
+
+
+
+
 				player = ((Player)gameMap.getPlayer());
 				enemy = (Enemy) gameMap.getEnemy();
 
+
+
+
+
 				player.init();
+
+
+				System.out.println("\nDFS - sciezka");
+
+				DFSPaths dfs1 = new DFSPaths(graph, player.getX()+player.getY()*30);
+				for (int it : dfs1.getPathTo(enemy.getX() +enemy.getY()*30)) {
+					System.out.print(it + " ");
+				}
+				System.out.println("\n----------");
+
+
+
 				flagStart = 1;
 				drawBackground();
 			}
@@ -198,7 +223,34 @@ public class MyGdxGame extends ApplicationAdapter {
 			possibilities.add("left");
 		}
 
+
+
 		if(!possibilities.isEmpty()){
+
+
+			List<DirectionEnum> prefarableDirection = getPrefarable();
+			for (DirectionEnum directionEnum:prefarableDirection
+			) {
+				if(directionEnum == DirectionEnum.dol && possibilities.contains("down")){
+					enemy.moveTo(DirectionEnum.dol);
+					return;
+				}
+				if(directionEnum == DirectionEnum.gora && possibilities.contains("up")){
+					enemy.moveTo(DirectionEnum.gora);
+					return;
+				}
+				if(directionEnum == DirectionEnum.prawo && possibilities.contains("right")){
+					enemy.moveTo(DirectionEnum.prawo);
+					return;
+				}
+				if(directionEnum == DirectionEnum.lewo && possibilities.contains("left")){
+					enemy.moveTo(DirectionEnum.lewo);
+					return;
+				}
+			}
+
+
+
 			Random r = new Random();
 			String result = possibilities.get(r.nextInt(possibilities.size()));
 
@@ -216,6 +268,45 @@ public class MyGdxGame extends ApplicationAdapter {
 					enemy.moveTo(DirectionEnum.lewo);
 					break;
 
+			}
+		}
+	}
+	private List<DirectionEnum> getPrefarable(){
+		int x = player.getX() - enemy.getX();
+		System.out.println("x="+x);
+		int y = player.getY() - enemy.getY();
+		System.out.println("y="+y);
+
+		List<DirectionEnum> priorityMoveQueue = new ArrayList<>();
+		if(x<0) {
+			priorityMoveQueue.add(DirectionEnum.lewo);
+			System.out.println("lewo");
+		}
+		if(x>0){
+			priorityMoveQueue.add(DirectionEnum.prawo);
+			System.out.println("prawo");
+		}
+		if(y<0){
+			priorityMoveQueue.add(DirectionEnum.dol);
+			System.out.println("dol");
+		}
+		if(y>0){
+			priorityMoveQueue.add(DirectionEnum.gora);
+			System.out.println("gora");
+		}
+
+		return priorityMoveQueue;
+	}
+
+	private void createGraph(){
+		for(int i= 0; i<29;i++) {
+			for(int j=0;j<29;j++) {
+				if(gameMap.get(i,j) instanceof EmptyHall || gameMap.get(i,j) instanceof Player || gameMap.get(i,j) instanceof Enemy && gameMap.get(i+1,j) instanceof EmptyHall || gameMap.get(i+1,j) instanceof  Player || gameMap.get(i+1,j) instanceof  Enemy){
+					graph.addEdge(i+(j*30),(i+1)+(j*30));
+				}
+				if(gameMap.get(i,j) instanceof EmptyHall || gameMap.get(i,j) instanceof Player || gameMap.get(i,j) instanceof Enemy && gameMap.get(i,j+1) instanceof EmptyHall || gameMap.get(i,j+1) instanceof Player || gameMap.get(i,j+1) instanceof  Enemy){
+					graph.addEdge(i+(j*30), i + (j+1)*30);
+				}
 			}
 		}
 	}
