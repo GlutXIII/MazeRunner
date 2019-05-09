@@ -27,6 +27,11 @@ public class MyGdxGame extends ApplicationAdapter {
 	private Enemy enemy;
 	private GameMap gameMap = new GameMap();
 	private Graph graph = new Graph(900);
+	private Iterable<Integer> resultPath;
+
+	private int playerPreviousY=-5;
+	private int playerPreviousX=-5;
+
 
 	int flagStart =0;
 	int tick=0;
@@ -227,7 +232,6 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		if(!possibilities.isEmpty()){
 
-
 			List<DirectionEnum> prefarableDirection = getPrefarable();
 			for (DirectionEnum directionEnum:prefarableDirection
 			) {
@@ -272,28 +276,79 @@ public class MyGdxGame extends ApplicationAdapter {
 		}
 	}
 	private List<DirectionEnum> getPrefarable(){
-		int x = player.getX() - enemy.getX();
-		System.out.println("x="+x);
-		int y = player.getY() - enemy.getY();
-		System.out.println("y="+y);
+
+
+
+		int i=0;
+		int prev = 0;
 
 		List<DirectionEnum> priorityMoveQueue = new ArrayList<>();
-		if(x<0) {
-			priorityMoveQueue.add(DirectionEnum.lewo);
-			System.out.println("lewo");
+
+		DFSPaths dfs1 = new DFSPaths(graph, enemy.getX() + enemy.getY() * 30);
+
+		resultPath = dfs1.getPathTo((player.getX() + player.getY() * 30));
+
+		System.out.println("\nDFS - sciezka");
+		for (int it : resultPath) {
+			System.out.print(it + " ");
 		}
-		if(x>0){
-			priorityMoveQueue.add(DirectionEnum.prawo);
-			System.out.println("prawo");
+		System.out.println("\n----------");
+
+		for (int it : resultPath) {
+			if(i==1) {
+			int result= it - prev;
+			switch(result){
+				case 1:
+					priorityMoveQueue.add(DirectionEnum.prawo);
+					System.out.println("1");
+					break;
+				case -1:
+					priorityMoveQueue.add(DirectionEnum.lewo);
+					System.out.println("-1");
+
+					break;
+				case 30:
+					System.out.println("30");
+
+					priorityMoveQueue.add(DirectionEnum.gora);
+					break;
+				case -30:
+					System.out.println("-30");
+
+					priorityMoveQueue.add(DirectionEnum.dol);
+					break;
+			}
+			}
+			prev =it;
+
+			i++;
 		}
-		if(y<0){
-			priorityMoveQueue.add(DirectionEnum.dol);
-			System.out.println("dol");
-		}
-		if(y>0){
-			priorityMoveQueue.add(DirectionEnum.gora);
-			System.out.println("gora");
-		}
+
+		playerPreviousY = player.getY();
+		playerPreviousX = player.getX();
+
+//		int x = player.getX() - enemy.getX();
+//		System.out.println("x="+x);
+//		int y = player.getY() - enemy.getY();
+//		System.out.println("y="+y);
+//
+//		List<DirectionEnum> priorityMoveQueue = new ArrayList<>();
+//		if(x<0) {
+//			priorityMoveQueue.add(DirectionEnum.lewo);
+//			System.out.println("lewo");
+//		}
+//		if(x>0){
+//			priorityMoveQueue.add(DirectionEnum.prawo);
+//			System.out.println("prawo");
+//		}
+//		if(y<0){
+//			priorityMoveQueue.add(DirectionEnum.dol);
+//			System.out.println("dol");
+//		}
+//		if(y>0){
+//			priorityMoveQueue.add(DirectionEnum.gora);
+//			System.out.println("gora");
+//		}
 
 		return priorityMoveQueue;
 	}
