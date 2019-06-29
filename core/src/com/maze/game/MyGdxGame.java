@@ -10,12 +10,11 @@ import com.maze.game.objects.GameMap;
 import com.maze.game.objects.gameObjects.GameObject;
 import com.maze.game.objects.gameObjects.standard.*;
 import com.maze.game.objects.gameObjects.winter.WinterWall;
-import com.maze.game.objects.graph.DFSPaths;
-import com.maze.game.objects.graph.Graph;
+import com.maze.game.objects.graph.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import static com.maze.game.objects.utils.Constants.EMPTY_HALL_CODE;
 import static com.maze.game.objects.utils.PathToFilesUtil.*;
@@ -25,9 +24,11 @@ public class MyGdxGame extends ApplicationAdapter {
 
 	private Player player;
 	private Enemy enemy;
+	private int [] pred;
 	private GameMap gameMap = new GameMap();
 	private Graph graph = new Graph(900);
-	private Iterable<Integer> resultPath;
+	private List<List<Node> > adj = new ArrayList<List<Node> >();
+	private final WeightedGraph graph2 = new WeightedGraph(900);
 
 	private int playerPreviousY=-5;
 	private int playerPreviousX=-5;
@@ -80,28 +81,39 @@ public class MyGdxGame extends ApplicationAdapter {
 				//gameMap.insertPlayerObject(player.getX(), player.getY());
 				gameMap.loadFromFile(MAP_FILE_PATH);
 				createGraph();
-				System.out.println(graph.toString());
-
-
+				//System.out.println(graph.toString());
 
 
 				player = ((Player)gameMap.getPlayer());
 				enemy = (Enemy) gameMap.getEnemy();
 
 
-
-
-
 				player.init();
+				setLebels();
+				graph2.print();
+				pred = Dijkstra.dijkstra (graph2, 0);
+
+				Dijkstra.getPath(graph2, pred, player.getX()+player.getY()*30, enemy.getX() +enemy.getY()*30);
+
+//				printGraph();
+//				DPQ dpq = new DPQ(900);
+//				dpq.dijkstra(adj, player.getX()+player.getY()*30);
+
+				// Print the shortest path to all the nodes
+				// from the source node
+//				System.out.println("The shorted path from node :");
+//				for (int i = 0; i < dpq.dist.length; i++) {
+//					System.out.println(player.getX() + player.getY() * 30 + " to " + i + " is "
+//							+ dpq.dist[i]);
+//				}
 
 
-				System.out.println("\nDFS - sciezka");
-
-				DFSPaths dfs1 = new DFSPaths(graph, player.getX()+player.getY()*30);
-				for (int it : dfs1.getPathTo(enemy.getX() +enemy.getY()*30)) {
-					System.out.print(it + " ");
-				}
-				System.out.println("\n----------");
+//			System.out.println("\nDFS - sciezka");
+//				DFSPaths dfs1 = new DFSPaths(graph, player.getX()+player.getY()*30);
+//				for (int it : dfs1.getPathTo(enemy.getX() +enemy.getY()*30)) {
+//					System.out.print(it + " ");
+//				}
+//				System.out.println("\n----------");
 
 
 
@@ -120,6 +132,13 @@ public class MyGdxGame extends ApplicationAdapter {
 			tick ++;
 		}
 	}
+	private void setLebels(){
+		for (int i =0;i <900;i++
+			 ) {
+			graph2.setLabel(i,i);
+		}
+	}
+
 	private boolean checkVictoryCondition(){
 		for(int i= 0; i<30;i++) {
 			for(int j=0;j<30;j++) {
@@ -254,25 +273,24 @@ public class MyGdxGame extends ApplicationAdapter {
 			}
 
 
-
-			Random r = new Random();
-			String result = possibilities.get(r.nextInt(possibilities.size()));
-
-			switch(result){
-				case "up":
-					enemy.moveTo(DirectionEnum.gora);
-					break;
-				case "down":
-					enemy.moveTo(DirectionEnum.dol);
-					break;
-				case "right":
-					enemy.moveTo(DirectionEnum.prawo);
-					break;
-				case "left":
-					enemy.moveTo(DirectionEnum.lewo);
-					break;
-
-			}
+//			Random r = new Random();
+//			String result = possibilities.get(r.nextInt(possibilities.size()));
+//
+//			switch(result){
+//				case "up":
+//					enemy.moveTo(DirectionEnum.gora);
+//					break;
+//				case "down":
+//					enemy.moveTo(DirectionEnum.dol);
+//					break;
+//				case "right":
+//					enemy.moveTo(DirectionEnum.prawo);
+//					break;
+//				case "left":
+//					enemy.moveTo(DirectionEnum.lewo);
+//					break;
+//
+//			}
 		}
 	}
 	private List<DirectionEnum> getPrefarable(){
@@ -284,11 +302,13 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		List<DirectionEnum> priorityMoveQueue = new ArrayList<>();
 
-		DFSPaths dfs1 = new DFSPaths(graph, enemy.getX() + enemy.getY() * 30);
+		//DFSPaths dfs1 = new DFSPaths(graph, enemy.getX() + enemy.getY() * 30);
 
-		resultPath = dfs1.getPathTo((player.getX() + player.getY() * 30));
-
+		//resultPath = dfs1.getPathTo((player.getX() + player.getY() * 30));
+		pred = Dijkstra.dijkstra (graph2, player.getX() + player.getY() * 30);
+		ArrayList<Integer> resultPath = Dijkstra.getPath(graph2, pred, player.getX() + player.getY() * 30, enemy.getX() + enemy.getY() * 30);
 		System.out.println("\nDFS - sciezka");
+		Collections.reverse(resultPath);
 		for (int it : resultPath) {
 			System.out.print(it + " ");
 		}
@@ -354,13 +374,31 @@ public class MyGdxGame extends ApplicationAdapter {
 	}
 
 	private void createGraph(){
+
 		for(int i= 0; i<29;i++) {
 			for(int j=0;j<29;j++) {
-				if(gameMap.get(i,j) instanceof EmptyHall || gameMap.get(i,j) instanceof Player || gameMap.get(i,j) instanceof Enemy && gameMap.get(i+1,j) instanceof EmptyHall || gameMap.get(i+1,j) instanceof  Player || gameMap.get(i+1,j) instanceof  Enemy){
-					graph.addEdge(i+(j*30),(i+1)+(j*30));
+				if((gameMap.get(i,j) instanceof EmptyHall || gameMap.get(i,j) instanceof Player || gameMap.get(i,j) instanceof Enemy) && (gameMap.get(i+1,j) instanceof EmptyHall || gameMap.get(i+1,j) instanceof  Player || gameMap.get(i+1,j) instanceof  Enemy)){
+
+					graph2.addEdge(i+(j*30),(i+1)+(j*30),1);
+					graph2.addEdge((i+1)+(j*30),i+(j*30),1);
+
+
+//					adj.get(i+(j*30)).add(new Node((i+1)+(j*30), 1));
+//					adj.get((i+1)+(j*30)).add(new Node(i+(j*30), 1));
+
+//					graph.addEdge(i+(j*30),(i+1)+(j*30));
 				}
-				if(gameMap.get(i,j) instanceof EmptyHall || gameMap.get(i,j) instanceof Player || gameMap.get(i,j) instanceof Enemy && gameMap.get(i,j+1) instanceof EmptyHall || gameMap.get(i,j+1) instanceof Player || gameMap.get(i,j+1) instanceof  Enemy){
-					graph.addEdge(i+(j*30), i + (j+1)*30);
+				if((gameMap.get(i,j) instanceof EmptyHall || gameMap.get(i,j) instanceof Player || gameMap.get(i,j) instanceof Enemy) && (gameMap.get(i,j+1) instanceof EmptyHall || gameMap.get(i,j+1) instanceof Player || gameMap.get(i,j+1) instanceof  Enemy)){
+
+					graph2.addEdge(i+(j*30),i + (j+1)*30,1);
+					graph2.addEdge(i + (j+1)*30,i+(j*30),1);
+
+
+//					adj.get(i+(j*30)).add(new Node(i + (j+1)*30, 1));
+//					adj.get(i + (j+1)*30).add(new Node(i+(j*30), 1));
+//
+//					graph.addEdge(i+(j*30), i + (j+1)*30);
+
 				}
 			}
 		}
